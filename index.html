@@ -1,0 +1,54 @@
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>くじ引き（なんでも鑑定団・左から桁が増える）</title>
+  <style>
+    body{margin:0;display:flex;justify-content:center;align-items:center;height:100vh;background:#0b1220;color:#fff;font-family:"Segoe UI",Meiryo,sans-serif}
+    .panel{background:#071026;padding:30px;border-radius:12px;box-shadow:0 0 20px #0007}
+    .price{font-size:64px;font-weight:800;letter-spacing:2px;color:#ffd54a}
+    button{margin-top:20px;padding:12px 20px;font-size:20px;border:none;border-radius:8px;background:#ff7043;color:#fff;cursor:pointer}
+    .digit{display:inline-block;animation:pop .18s ease-out}
+    @keyframes pop{0%{transform:scale(0.2);opacity:0}60%{transform:scale(1.2);opacity:1}100%{transform:scale(1);opacity:1}}
+  </style>
+</head>
+<body>
+<div class="panel">
+  <div class="price">¥<span id="out">0</span></div>
+  <button id="start">スタート</button>
+</div>
+
+<script>
+const amounts = [10,100,1000,10000];
+const out = document.getElementById("out");
+const start = document.getElementById("start");
+let busy = false;
+
+function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
+
+async function animate(target){
+  if(busy) return; busy = true; start.disabled = true;
+
+  const str = String(target);     // 例: "10000"
+  out.innerHTML = "";             // まず空
+
+  // 左から 1桁ずつ追加するだけ（ユーザーの要望通り）
+  for(let i=0;i<str.length;i++){
+    const span = document.createElement("span");
+    span.className = "digit";
+    span.textContent = str[i];
+    out.appendChild(span);
+    await sleep(200); // 1桁ずつ表示するテンポ
+  }
+
+  busy = false;
+  start.disabled = false;
+}
+
+start.addEventListener("click",()=>{
+  const result = amounts[Math.floor(Math.random()*amounts.length)];
+  animate(result);
+});
+</script>
+</body>
+</html>
