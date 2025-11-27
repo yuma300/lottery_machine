@@ -74,7 +74,8 @@
 
 
 const audio_digitfix = new Audio('digitfix.mp3'); // Audio オブジェクト作成
-const audio_amountfix = new Audio('amountfix.mp3'); 
+const audio_amountfix = new Audio('amountfix.mp3');
+const audio_bgm = new Audio('18s.mp3'); 
 
 const amounts = [1000,10000,100000,100000];
 const out = document.getElementById("out");
@@ -86,6 +87,7 @@ function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
 async function animate(target){
   let timerId = null;
   if(busy) return; busy = true; start.disabled = true;
+  audio_bgm.play()
 
   const str = String(target);     // 例: "10000"
   out.innerHTML = "";             // まず空
