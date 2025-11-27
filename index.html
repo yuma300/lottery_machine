@@ -82,6 +82,7 @@ let busy = false;
 function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
 
 async function animate(target){
+  let timerId = null;
   if(busy) return; busy = true; start.disabled = true;
 
   const str = String(target);     // 例: "10000"
@@ -99,7 +100,10 @@ async function animate(target){
 
   busy = false;
   start.disabled = false;
-  setInterval(createChip, 100);
+  timerId = setInterval(createChip, 100);
+  await sleep(10000); // 1桁ずつ表示するテンポ
+  clearInterval(timerId)
+  timerId = null
 }
 
 start.addEventListener("click",()=>{
