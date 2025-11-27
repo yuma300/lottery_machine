@@ -10,7 +10,23 @@
     button{margin-top:20px;padding:12px 20px;font-size:20px;border:none;border-radius:8px;background:#ff7043;color:#fff;cursor:pointer}
     .digit{display:inline-block;animation:pop .18s ease-out}
     @keyframes pop{0%{transform:scale(0.2);opacity:0}60%{transform:scale(1.2);opacity:1}100%{transform:scale(1);opacity:1}}
-  </style>
+    .chip {
+      position: fixed;
+      top: -100px;
+      pointer-events: none;
+      animation: fall linear forwards;
+    }
+
+    @keyframes fall {
+      from {
+        transform: translateY(0) rotate(0deg);
+      }
+      to {
+        transform: translateY(120vh) rotate(360deg);
+      }
+    }
+
+</style>
 </head>
 <body>
 <div class="panel">
@@ -19,6 +35,45 @@
 </div>
 
 <script>
+    const chipImages = [
+      "redchip.png",
+      "whitechip.png",
+      "greenchip.png",
+      "blackchip.png"
+      // ここに好きな画像を追加
+    ];
+
+    function createChip() {
+      const chip = document.createElement("img");
+      chip.classList.add("chip");
+
+      // 画像をランダム選択
+      chip.src = chipImages[Math.floor(Math.random() * chipImages.length)];
+
+      // ランダム横位置
+      chip.style.left = Math.random() * window.innerWidth + "px";
+
+      // ランダムサイズ
+      const size = 40 + Math.random() * 60;
+      chip.style.width = size + "px";
+
+      // ランダム落下速度
+      const duration = 2 + Math.random() * 4;
+      chip.style.animationDuration = duration + "s";
+
+      // ランダム回転角度
+      chip.style.transform = `rotate(${Math.random() * 360}deg)`;
+
+      document.body.appendChild(chip);
+
+      // アニメーション後に削除
+      setTimeout(() => {
+        chip.remove();
+      }, duration * 1000);
+    }
+
+
+
 const amounts = [1000,10000,100000,100000];
 const out = document.getElementById("out");
 const start = document.getElementById("start");
@@ -34,16 +89,17 @@ async function animate(target){
 
   // 左から 1桁ずつ追加するだけ（ユーザーの要望通り）
   for(let i=str.length;i>=0;i--){
+    await sleep(900); // 1桁ずつ表示するテンポ
     const span = document.createElement("span");
     span.className = "digit";
     span.textContent = str[i];
     out.prepend(span);
     console.log(out);
-    await sleep(1200); // 1桁ずつ表示するテンポ
   }
 
   busy = false;
   start.disabled = false;
+  setInterval(createChip, 100);
 }
 
 start.addEventListener("click",()=>{
