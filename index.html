@@ -19,7 +19,7 @@
 </div>
 
 <script>
-const amounts = [10,100,1000,10000];
+const amounts = [1000,10000,100000,100000];
 const out = document.getElementById("out");
 const start = document.getElementById("start");
 let busy = false;
@@ -33,12 +33,13 @@ async function animate(target){
   out.innerHTML = "";             // まず空
 
   // 左から 1桁ずつ追加するだけ（ユーザーの要望通り）
-  for(let i=0;i<str.length;i++){
+  for(let i=str.length;i>=0;i--){
     const span = document.createElement("span");
     span.className = "digit";
     span.textContent = str[i];
-    out.appendChild(span);
-    await sleep(200); // 1桁ずつ表示するテンポ
+    out.prepend(span);
+    console.log(out);
+    await sleep(1200); // 1桁ずつ表示するテンポ
   }
 
   busy = false;
