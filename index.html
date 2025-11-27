@@ -30,7 +30,7 @@
 </head>
 <body>
 <div class="panel">
-  <div class="price">¥<span id="out">0</span></div>
+  <div class="price"><span id="out">0</span></div>
   <button id="start">スタート</button>
 </div>
 
@@ -73,6 +73,8 @@
     }
 
 
+const audio_digitfix = new Audio('digitfix.mp3'); // Audio オブジェクト作成
+const audio_amountfix = new Audio('amountfix.mp3'); 
 
 const amounts = [1000,10000,100000,100000];
 const out = document.getElementById("out");
@@ -90,25 +92,37 @@ async function animate(target){
 
   // 左から 1桁ずつ追加するだけ（ユーザーの要望通り）
   for(let i=str.length;i>=0;i--){
-    await sleep(900); // 1桁ずつ表示するテンポ
+    await sleep(1300); // 1桁ずつ表示するテンポ
     const span = document.createElement("span");
     span.className = "digit";
     span.textContent = str[i];
     out.prepend(span);
-    console.log(out);
+    if (i!=str.length) audio_digitfix.play();
+    if (i==0) {
+      await sleep(500);
+      const span = document.createElement("span");
+      span.className = "digit";
+      span.textContent = "¥";
+      out.prepend(span);
+    }
   }
+
 
   busy = false;
   start.disabled = false;
   timerId = setInterval(createChip, 100);
-  await sleep(10000); // 1桁ずつ表示するテンポ
+  await sleep(6000); // 1桁ずつ表示するテンポ
   clearInterval(timerId)
   timerId = null
 }
 
-start.addEventListener("click",()=>{
+start.addEventListener("click", async ()=>{
   const result = amounts[Math.floor(Math.random()*amounts.length)];
-  animate(result);
+  audio_amountfix.currentTime = 0; 
+  audio_amountfix.load();
+  await animate(result);
+  audio_amountfix.currentTime = 0; 
+  audio_amountfix.play();
 });
 </script>
 </body>
