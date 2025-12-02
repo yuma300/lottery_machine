@@ -4,9 +4,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>くじ引き（なんでも鑑定団・左から桁が増える）</title>
   <style>
-    body{margin:0;display:flex;justify-content:center;align-items:center;height:100vh;background:#0b1220;color:#fff;font-family:"Segoe UI",Meiryo,sans-serif}
-    .panel{background:#071026;padding:30px;border-radius:12px;box-shadow:0 0 20px #0007}
-    .price{font-size:64px;font-weight:800;letter-spacing:2px;color:#ffd54a}
+    body{margin:0;justify-content:center;align-items:center;height:100vh;background:#0b1220;color:#fff;font-family:"Segoe UI",Meiryo,sans-serif}
+    .panel{background:#071026;width:100%;text-align: center;padding-top: 20%; border-radius:12px;box-shadow:0 0 20px #0007}
+    .price{font-size:2000%;font-weight:300;letter-spacing:100%;color:#ffd54a}
     button{margin-top:20px;padding:12px 20px;font-size:20px;border:none;border-radius:8px;background:#ff7043;color:#fff;cursor:pointer}
     .digit{display:inline-block;animation:pop .18s ease-out}
     @keyframes pop{0%{transform:scale(0.2);opacity:0}60%{transform:scale(1.2);opacity:1}100%{transform:scale(1);opacity:1}}
@@ -29,11 +29,12 @@
 </style>
 </head>
 <body>
-<div class="panel">
-  <div class="price"><span id="out">0</span></div>
+<div>
   <button id="start">スタート</button>
 </div>
-
+<div class="panel">
+  <div class="price"><span id="out">0</span></div>
+</div>
 <script>
     const chipImages = [
       "redchip.png",
@@ -75,14 +76,39 @@
 
 const audio_digitfix = new Audio('digitfix.mp3'); // Audio オブジェクト作成
 const audio_amountfix = new Audio('amountfix.mp3');
-const audio_bgm = new Audio('18s.mp3'); 
+const audio_bgm = new Audio('10s.mp3'); 
 
-const amounts = [1000,10000,100000,100000];
+//const amounts = [200, 1000, 5000,10000,100000,1000000];
+const gachaTable1 = [
+  { item: 1000000, rate: 8 }, 
+  { item: 100000, rate: 111 },
+  { item: 10000, rate: 4858 }, 
+  { item: 5000, rate: 7627 },
+  { item: 1000, rate: 9604 },
+  { item: 200,  rate: 10000 }, 
+];
+
 const out = document.getElementById("out");
 const start = document.getElementById("start");
 let busy = false;
 
 function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
+
+function drawGacha(table) {
+  // 総レート（100でなくてもOK、合計から自動計算）
+  const total = 10000;
+  console.log(`ywdebug ${total}`)
+  // 0〜totalのランダム値
+  const r = Math.random();
+  console.log(`ywdebug ${r}`)
+  const pick_number = r * total;
+  console.log(`ywdebug ${pick_number}`)
+  for (const entry of table) {
+    if (pick_number < entry.rate) {
+      return entry.item;
+    }
+  }
+}
 
 async function animate(target){
   let timerId = null;
@@ -100,26 +126,19 @@ async function animate(target){
     span.textContent = str[i];
     out.prepend(span);
     if (i!=str.length) audio_digitfix.play();
-    if (i==0) {
-      await sleep(500);
-      const span = document.createElement("span");
-      span.className = "digit";
-      span.textContent = "¥";
-      out.prepend(span);
-    }
   }
 
 
   busy = false;
   start.disabled = false;
   timerId = setInterval(createChip, 100);
-  await sleep(6000); // 1桁ずつ表示するテンポ
+  await sleep(3500); 
   clearInterval(timerId)
   timerId = null
 }
 
 start.addEventListener("click", async ()=>{
-  const result = amounts[Math.floor(Math.random()*amounts.length)];
+  const result = drawGacha(gachaTable);
   audio_amountfix.currentTime = 0; 
   audio_amountfix.load();
   await animate(result);
