@@ -129,7 +129,7 @@ async function animate(target){
 
   busy = false;
   start.disabled = false;
-  timerId = setInterval(createChip, 100);
+  timerId = setInterval(createChip, 100000/target);
   await sleep(3500); 
   clearInterval(timerId)
   timerId = null
