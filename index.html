@@ -19,10 +19,10 @@
 
     @keyframes fall {
       from {
-        transform: translateY(0) rotate(0deg);
+        transform: translateY(0);
       }
       to {
-        transform: translateY(120vh) rotate(360deg);
+        transform: translateY(120vh);
       }
     }
 
@@ -61,7 +61,7 @@
       chip.style.animationDuration = duration + "s";
 
       // ランダム回転角度
-      chip.style.transform = `rotate(${Math.random() * 360}deg)`;
+      //chip.style.transform = `rotate(${Math.random() * 360}deg)`;
 
       document.body.appendChild(chip);
 
